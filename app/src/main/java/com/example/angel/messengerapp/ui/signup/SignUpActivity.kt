@@ -1,4 +1,4 @@
-package com.example.angel.messengerapp.ui.login
+package com.example.angel.messengerapp.ui.signup
 
 import android.content.Context
 import android.content.Intent
@@ -12,32 +12,34 @@ import android.widget.Toast
 import com.example.angel.messengerapp.R
 import com.example.angel.messengerapp.data.local.AppPreferences
 import com.example.angel.messengerapp.ui.main.MainActivity
-import com.example.angel.messengerapp.ui.signup.SignUpActivity
-import kotlinx.android.synthetic.main.activity_login.*
 
-class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
+class SignUpActivity : AppCompatActivity(), SignUpView, View.OnClickListener {
 
     private lateinit var etUsername: EditText
+    private lateinit var etPhoneNumber: EditText
     private lateinit var etPassword: EditText
-    private lateinit var btnLogin: Button
     private lateinit var btnSignUp: Button
     private lateinit var progressBar: ProgressBar
-
-    private lateinit var presenter: LoginPresenter
-    private lateinit var preferences: AppPreferences
+    private lateinit var presenter: SignUpPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-        preferences = AppPreferences.create(this)
-        if(preferences.accessToken != null)
-            navigateToHome()
-        presenter = LoginPresenterImpl(this)
+        setContentView(R.layout.activity_sign_up)
+        presenter = SignUpPresenterImpl(this)
+        presenter.preferences = AppPreferences.create(this)
         bindViews()
     }
 
     override fun showProgress() {
         progressBar.visibility = View.VISIBLE
+    }
+
+    override fun showSignUpError() {
+        Toast.makeText(
+            this,
+            "An unexpected error occurred. Please try again later.",
+            Toast.LENGTH_LONG)
+            .show()
     }
 
     override fun hideProgress() {
@@ -48,12 +50,12 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
         etUsername.error = "Username field cannot be empty"
     }
 
-    override fun setPasswordError() {
-        etPassword.error = "Password field cannot be empty"
+    override fun setPhoneNumberError() {
+        etPhoneNumber.error = "Phone Number field cannot be empty"
     }
 
-    override fun navigateToSignUp() {
-        startActivity(Intent(this, SignUpActivity::class.java))
+    override fun setPasswordError() {
+        etPassword.error = "Password field cannot be empty"
     }
 
     override fun navigateToHome() {
@@ -63,12 +65,11 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
 
     override fun bindViews() {
         etUsername = findViewById(R.id.et_username)
+        etPhoneNumber = findViewById(R.id.et_phone)
         etPassword = findViewById(R.id.et_password)
-        btnLogin = findViewById(R.id.btn_login)
         btnSignUp = findViewById(R.id.btn_sign_up)
-        progressBar = findViewById(R.id.progress_bar)
-        btnLogin.setOnClickListener(this)
         btnSignUp.setOnClickListener(this)
+        progressBar = findViewById(R.id.progress_bar)
     }
 
     override fun getContext(): Context {
@@ -76,14 +77,17 @@ class LoginActivity : AppCompatActivity(), LoginView, View.OnClickListener {
     }
 
     override fun showAuthError() {
-        Toast.makeText(this, "Invalid username and password combination.", Toast.LENGTH_LONG).show()
+        Toast.makeText(
+            this,
+            "An authorization error occurred. Please try again later.",
+            Toast.LENGTH_LONG).show()
     }
 
     override fun onClick(v: View?) {
-        if(v?.id == R.id.btn_login) {
-            presenter.executeLogin(et_username.text.toString(), et_password.text.toString())
-        } else if(v?.id == R.id.btn_sign_up) {
-            navigateToSignUp()
+        if(v?.id == R.id.btn_sign_up) {
+            presenter.executeSignUp(etUsername.text.toString(),
+                etPhoneNumber.text.toString(),
+                etPassword.text.toString())
         }
     }
 }

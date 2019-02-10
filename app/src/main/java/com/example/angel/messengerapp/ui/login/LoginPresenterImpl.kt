@@ -1,5 +1,6 @@
 package com.example.angel.messengerapp.ui.login
 
+import android.util.Log
 import com.example.angel.messengerapp.data.local.AppPreferences
 import com.example.angel.messengerapp.ui.auth.AuthInteractor
 
@@ -14,6 +15,7 @@ class LoginPresenterImpl(private val view: LoginView):
     override fun onDetailsRetrievalSuccess() {
         interactor.persistUserDetails(preferences)
         view.hideProgress()
+        Log.e("ANGEL", "BEFORE CALLING navigateToHome()")
         view.navigateToHome()
     }
 

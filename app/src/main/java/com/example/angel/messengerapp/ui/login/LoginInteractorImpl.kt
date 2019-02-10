@@ -27,12 +27,10 @@ class LoginInteractorImpl: LoginInteractor {
                 submittedPassword = password
                 val requestObject = LoginRequestObject(submittedUsername, submittedPassword)
 
-                Log.e("RESTAPI", "Do tuka raboti 1")
                 service.login(requestObject)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({response ->
-                        Log.e("RESTAPI", "Do tuka raboti")
                         if(response.code() != 403) {
                             accessToken = response.headers()["Authorization"] as String
                             listener.onAuthSuccess()
@@ -40,7 +38,6 @@ class LoginInteractorImpl: LoginInteractor {
                             listener.onAuthError()
                         }
                     }, {error ->
-                        Log.e("RESTAPI", error.message)
                         listener.onAuthError()
                         error.printStackTrace()
                     })

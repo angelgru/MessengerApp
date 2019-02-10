@@ -26,7 +26,6 @@ class SignUpActivity : AppCompatActivity(), SignUpView, View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
         presenter = SignUpPresenterImpl(this)
-        presenter.preferences = AppPreferences.create(this)
         bindViews()
     }
 
